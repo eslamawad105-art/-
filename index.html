@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1730">
+  <meta name="description" content="العد التنازلي لموعد انتهاء العقد في 25 نوفمبر 2026">
+  <title>العد التنازلي لانتهاء العقد</title>
+  <style>
+    :root { color-scheme: dark; --bg:#071426; --panel:#10223b; --line:#30435e; --gold:#f4c451; --text:#f7f9ff; --muted:#b7c3d6; }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; min-height:100vh; padding:24px 16px; display:grid; place-items:center;
+      font-family:Tahoma, Arial, sans-serif; color:var(--text);
+      background:radial-gradient(ellipse at top, #203b60 0%, #0b1730 48%, #050b16 100%);
+    }
+    .wrap { width:min(760px,100%); }
+    .card {
+      border:1px solid var(--line); border-radius:26px; padding:clamp(22px,5vw,44px);
+      background:linear-gradient(145deg,rgba(20,42,70,.96),rgba(7,18,34,.97));
+      box-shadow:0 24px 70px rgba(0,0,0,.35);
+      text-align:center;
+    }
+    .eyebrow { color:var(--gold); font-size:.95rem; letter-spacing:.04em; }
+    h1 { margin:12px 0 8px; font-size:clamp(1.8rem,5vw,3rem); line-height:1.35; }
+    .date { display:inline-block; margin:12px 0 28px; padding:10px 18px; border:1px solid var(--line); border-radius:999px; color:#fff; font-size:clamp(1rem,3vw,1.25rem); }
+    .timer { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .unit { padding:20px 8px 16px; border:1px solid #334863; border-radius:17px; background:rgba(3,11,24,.55); }
+    .num { display:block; font-size:clamp(2rem,7vw,3.5rem); line-height:1.15; font-weight:800; font-variant-numeric:tabular-nums; color:var(--gold); }
+    .label { display:block; margin-top:9px; color:var(--muted); font-size:.95rem; }
+    .message { margin:28px 0 0; font-size:clamp(1.1rem,3vw,1.45rem); font-weight:700; }
+    .sub { margin:12px 0 0; color:var(--muted); font-size:.9rem; line-height:1.8; }
+    .progress { margin:25px auto 0; height:6px; max-width:460px; overflow:hidden; border-radius:999px; background:#253954; }
+    .progress span { display:block; width:0; height:100%; background:linear-gradient(90deg,#f4c451,#fff0b4); }
+    footer { margin-top:18px; text-align:center; color:#8fa0b8; font-size:.8rem; }
+    @media(max-width:480px) { .timer { gap:7px; } .unit { padding:16px 3px 13px; border-radius:12px; } .label { font-size:.8rem; } }
+    @media(prefers-reduced-motion:reduce) { * { scroll-behavior:auto !important; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card" aria-labelledby="title">
+      <div class="eyebrow">⏳ كل يوم أقرب لبداية جديدة</div>
+      <h1 id="title">العدّ التنازلي لانتهاء العقد</h1>
+      <div class="date">📅 الأربعاء، 25 نوفمبر 2026</div>
+      <div class="timer" aria-label="الوقت المتبقي">
+        <div class="unit"><span class="num" id="days">--</span><span class="label">يوم</span></div>
+        <div class="unit"><span class="num" id="hours">--</span><span class="label">ساعة</span></div>
+        <div class="unit"><span class="num" id="minutes">--</span><span class="label">دقيقة</span></div>
+        <div class="unit"><span class="num" id="seconds">--</span><span class="label">ثانية</span></div>
+      </div>
+      <p class="message" id="message">باقي القليل… وبدأ فصل جديد 💪</p>
+      <p class="sub" id="status">يتحدّث العداد تلقائيًا كل ثانية وفق توقيت الرياض.</p>
+      <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+    </section>
+    <footer>صفحة عدّ تنازلي شخصية • شارك الرابط مع من تريد</footer>
+  </main>
+  <script>
+    // نهاية يوم 25 نوفمبر 2026 بتوقيت الرياض (UTC+3).
+    const target = Date.UTC(2026, 10, 25, 20, 59, 59);
+    const start = Date.UTC(2026, 9, 27, 0, 0, 0);
+    const $ = id => document.getElementById(id);
+    const pad = n => String(n).padStart(2, '0');
+    function updateCountdown() {
+      let remaining = target - Date.now();
+      if (remaining <= 0) {
+        ['days','hours','minutes','seconds'].forEach(id => $(id).textContent = '00');
+        $('message').textContent = 'وصل الموعد المنتظر 🎉';
+        $('status').textContent = 'انتهى العدّ التنازلي.';
+        $('progress').style.width = '100%';
+        return;
+      }
+      const days = Math.floor(remaining / 86400000); remaining %= 86400000;
+      const hours = Math.floor(remaining / 3600000); remaining %= 3600000;
+      const minutes = Math.floor(remaining / 60000);
+      const seconds = Math.floor((remaining % 60000) / 1000);
+      $('days').textContent = days;
+      $('hours').textContent = pad(hours);
+      $('minutes').textContent = pad(minutes);
+      $('seconds').textContent = pad(seconds);
+      const elapsed = Math.max(0, Math.min(1, (Date.now() - start) / (target - start)));
+      $('progress').style.width = (elapsed * 100).toFixed(2) + '%';
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
